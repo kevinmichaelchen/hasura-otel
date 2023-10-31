@@ -49,16 +49,21 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters:
-        - otlp
+        # - otlp
         - debug # Lets us view spans in logs
-        - otlp/jaeger # Export spans to Jaeger -- http://localhost:16686/
+        # - otlp/jaeger # Export spans to Jaeger -- http://localhost:16686/
         # failing with: transport: Error while dialing: dial tcp: address tcp/5080/api/default/traces: unknown port
     #        - otlp/openobserve # Export spans to OpenObserve -- http://localhost:5080
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp, prometheusremotewrite]
+      exporters:
+        - debug
+        # - otlp
+        # - prometheusremotewrite
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp]
+      exporters:
+        - debug
+        # - otlp
