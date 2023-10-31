@@ -3,7 +3,10 @@ services:
   # All traces and metrics from Go and Hasura will first go into the
   # OpenTelemetry Collector.
   collector:
-    image: otel/opentelemetry-collector
+    # The transform processor isn't supported by the core distribution,
+    # hence we use the contrib distribution!
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor
+    image: otel/opentelemetry-collector-contrib:latest
     env_file:
       - env/newrelic.env
     # Expose OTel Collector's OTLP ports so Hasura can send it telemetry
@@ -84,7 +87,7 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: "/var/schema/migrations"
       HASURA_GRAPHQL_METADATA_DIR: "/var/schema/metadata"
       HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, query-log, http-log, webhook-log
       HASURA_GRAPHQL_ENABLED_APIS: metadata,graphql,config,metrics
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
