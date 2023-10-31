@@ -13,6 +13,7 @@ processors:
         statements:
           - set(attributes["traceid"], body["request_id"])
           - set(attributes["traceid2"], "bear")
+          - set(body["foobar"], "bear")
 
 exporters:
   otlp/jaeger:
