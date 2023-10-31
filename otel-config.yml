@@ -6,6 +6,13 @@ receivers:
 
 processors:
   batch:
+  transform:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+          - set(attributes["traceid"], body["request_id"])
+          - set(attributes["traceid2"], "bear")
 
 exporters:
   otlp/jaeger:
@@ -63,7 +70,7 @@ service:
         # - prometheusremotewrite
     logs:
       receivers: [otlp]
-      processors: [batch]
+      processors: [batch, transform]
       exporters:
         - debug
         # - otlp
