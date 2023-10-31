@@ -1,0 +1,3 @@
+table:
+  name: pet
+  schema: public

@@ -1,0 +1,64 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  otlp/jaeger:
+    endpoint: http://jaeger:4317
+    tls:
+      insecure: true
+
+  otlp/openobserve:
+    endpoint: http://host.docker.internal:5080/api/default/traces
+    headers:
+      Authorization: Basic a2V2aW5taWNoYWVsY2hlbkBnbWFpbC5jb206dHZLaTZJY3VPbjlJMDVqZw==
+    tls:
+      insecure: true
+
+  # Used for Open Observe
+  prometheusremotewrite:
+    endpoint: "http://openobserve:5080/api/default/prometheus/api/v1/write"
+    headers:
+      Authorization: Basic a2V2aW5taWNoYWVsY2hlbkBnbWFpbC5jb206dHZLaTZJY3VPbjlJMDVqZw==
+
+  # Enabled from time-to-time to view telemetry in the logs
+  debug:
+    verbosity: detailed
+
+  # OTLP to New Relic
+  otlp:
+    # https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/get-started/opentelemetry-set-up-your-app/
+    endpoint: "https://otlp.nr-data.net:443"
+    headers:
+      api-key: ${NEW_RELIC_KEY}
+
+service:
+  # Set DEBUG-level logs
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/troubleshooting.md#troubleshooting
+  #  telemetry:
+  #    logs:
+  #      level: "debug"
+
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters:
+        - otlp
+        - debug # Lets us view spans in logs
+        - otlp/jaeger # Export spans to Jaeger -- http://localhost:16686/
+        # failing with: transport: Error while dialing: dial tcp: address tcp/5080/api/default/traces: unknown port
+    #        - otlp/openobserve # Export spans to OpenObserve -- http://localhost:5080
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp, prometheusremotewrite]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
