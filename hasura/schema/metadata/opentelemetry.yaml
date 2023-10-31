@@ -5,9 +5,9 @@ data_types:
   - logs
 exporter_otlp:
   headers: []
-  otlp_logs_endpoint: http://collector:4318/v1/logs
-  otlp_metrics_endpoint: http://collector:4318/v1/metrics
-  otlp_traces_endpoint: http://collector:4318/v1/traces
+  otlp_logs_endpoint: http://host.docker.internal:4318/v1/logs
+  otlp_metrics_endpoint: http://host.docker.internal:4318/v1/metrics
+  otlp_traces_endpoint: http://host.docker.internal:4318/v1/traces
   protocol: http/protobuf
   resource_attributes: []
   traces_propagators:
