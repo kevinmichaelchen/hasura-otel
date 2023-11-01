@@ -23,8 +23,4 @@ tasks:
       # Wait until Hasura is healthy... with Exponential Backoff
       - pkgx eb -x 20 -- curl http://localhost:8080/healthz
       - task: hasura:reload
-      - task: open-jaeger-ui
       - task: hasura:ui
-
-  open-jaeger-ui:
-    cmd: open http://localhost:16686

@@ -7,8 +7,6 @@ services:
     # hence we use the contrib distribution!
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor
     image: otel/opentelemetry-collector-contrib:latest
-    env_file:
-      - env/newrelic.env
     # Expose OTel Collector's OTLP ports so Hasura can send it telemetry
     expose:
       - 4317 # otlp grpc
@@ -19,41 +17,6 @@ services:
     volumes:
       - ./otel-config.yml:/etc/otel-config.yaml
     command: "--config=/etc/otel-config.yaml"
-    depends_on:
-      - jaeger
-      - openobserve
-
-  # http://localhost:16686/
-  jaeger:
-    image: jaegertracing/all-in-one:1.50
-    # Enable OTLP export of traces from OTel Collector to Jaeger
-    environment:
-      COLLECTOR_OTLP_ENABLED: true
-    # Expose Jaeger's OTLP ports so the OTel Collector can write to Jaeger
-    expose:
-      - 4317 # otlp grpc
-      - 4318 # otlp http
-      - 14269 # jaeger collector, admin port
-      - 5778 # serves sampling strategies
-    ports:
-      - "127.0.0.1:16686:16686" # jaeger ui
-
-  # OpenObserve runs on http://localhost:5080
-  # Use the credentials specified below and try it out yourself.
-  # We configure the OTel Collector to export traces and metrics
-  # to OpenObserve.
-  openobserve:
-    image: public.ecr.aws/zinclabs/openobserve:latest
-    volumes:
-      - ./data:/data
-    environment:
-      ZO_DATA_DIR: "/data"
-      ZO_ROOT_USER_EMAIL: "kevinmichaelchen@gmail.com"
-      ZO_ROOT_USER_PASSWORD: "Complexpass#123"
-    expose:
-      - 5080
-    ports:
-      - "127.0.0.1:5080:5080" # OpenObserve UI
 
   postgres:
     image: postgres:15
