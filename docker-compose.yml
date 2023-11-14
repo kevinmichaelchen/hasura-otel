@@ -50,7 +50,7 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: "/var/schema/migrations"
       HASURA_GRAPHQL_METADATA_DIR: "/var/schema/metadata"
       HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, query-log, http-log, webhook-log
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, query-log, http-log, webhook-log, tracing-log
       HASURA_GRAPHQL_ENABLED_APIS: metadata,graphql,config,metrics
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
