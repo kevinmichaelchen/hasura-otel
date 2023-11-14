@@ -14,11 +14,15 @@ tasks:
       - run
     desc: "Spin everything up"
     cmds:
+      # Stop containers
       - pkgx docker-clean stop || true
-      - pkgx killport 8081
+      # Start database
       - docker compose up -d postgres
+      # Sleep to allow database some time to start
+      - sleep 3
       # Wait until Postgres is healthy... with Exponential Backoff
       - pkgx eb -- pkgx pg_isready -U postgres -d postgres -p 15432 -h 127.0.0.1
+      # Start Hasura
       - docker compose up -d
       # Wait until Hasura is healthy... with Exponential Backoff
       - pkgx eb -x 20 -- curl http://localhost:8080/healthz
